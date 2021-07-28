@@ -2,34 +2,71 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import * as Linking from 'expo-linking';
+import HomePage from './pages/HomePage';
+import GalleryPage from './pages/GalleryPage';
+import ContactPage from './pages/ContactPage';
+import SettingsPage from './pages/SettingsPage';
 
 export default function App() {
+
+    const [page, setPage] = React.useState('Home');
+
+    const instaLink = () => {
+        Linking.openURL('https://instagram.com/dekpowyna')
+    }
+
   return (
     <View style={styles.container}>
         <View style={styles.header}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={
+                () => {
+                    setPage('Home');
+                }
+            }>
                 <Ionicons name="md-home" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity>
                 <Text>Header</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={
+                () => {
+                    setPage('Settings')
+                }
+            }>
                 <Ionicons name="md-settings" size={24} color="black" />
             </TouchableOpacity>
         </View>
 
-        <View style={styles.content}>
-            <Text>Content</Text>
-        </View>
+        {( () => {
+            switch (page){ 
+                case 'Home':
+                        return <HomePage /> 
+                case 'Settings':
+                    return <SettingsPage />
+                case 'Gallery':
+                    return <GalleryPage />
+                case 'Contact':
+                    return <ContactPage />
+        }
+        })()}
 
         <View style={styles.footer}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={
+                () => {
+                    setPage('Gallery');
+                }
+            }>
                 <Ionicons name="md-apps" size={24} color="black" /> 
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={instaLink}>
                 <Ionicons name="md-logo-instagram" size={24} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity> 
+            <TouchableOpacity onPress={
+                () => {
+                    setPage('Contact');
+                }
+            }> 
                 <Ionicons name="md-mail" size={24} color="black" /> 
             </TouchableOpacity>
         </View>
