@@ -1,12 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView } from 'react-native';
 import * as Linking from 'expo-linking';
 import HomePage from './pages/HomePage';
 import GalleryPage from './pages/GalleryPage';
 import ContactPage from './pages/ContactPage';
 import SettingsPage from './pages/SettingsPage';
+import { Ubuntu_400Regular, useFonts } from '@expo-google-fonts/ubuntu';
+import AppLoading from 'expo-app-loading';
 
 export default function App() {
 
@@ -14,6 +16,14 @@ export default function App() {
 
     const instaLink = () => {
         Linking.openURL('https://instagram.com/dekpowyna')
+    }
+
+    let [fontsLoaded] = useFonts({
+        Ubuntu_400Regular
+    });
+
+    if(!fontsLoaded){
+        return <AppLoading />
     }
 
   return (
@@ -26,9 +36,16 @@ export default function App() {
             }>
                 <Ionicons name="md-home" size={24} color="black" />
             </TouchableOpacity>
+
             <TouchableOpacity>
-                <Text>Header</Text>
+                <Text style={
+                    {
+                        fontFamily: 'Ubuntu_400Regular',
+                        fontSize: 40
+                    }
+                }>My App</Text>
             </TouchableOpacity>
+
             <TouchableOpacity onPress={
                 () => {
                     setPage('Settings')
@@ -38,6 +55,7 @@ export default function App() {
             </TouchableOpacity>
         </View>
 
+        <ScrollView>
         {( () => {
             switch (page){ 
                 case 'Home':
@@ -50,6 +68,7 @@ export default function App() {
                     return <ContactPage />
         }
         })()}
+        </ScrollView>
 
         <View style={styles.footer}>
             <TouchableOpacity onPress={
