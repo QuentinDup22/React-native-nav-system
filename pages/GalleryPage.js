@@ -1,29 +1,57 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, Dimensions } from 'react-native';
 
-const getPics = async () => {
-    const response = await fetch('https://picsum.photos/v2/list?limit=24');
+const windowWidth = Dimensions.get('window').width;
+
+const getPics = async (limit) => {
+    const response = await fetch('https://picsum.photos/v2/list?limit=' + limit);
     const data = await response.json();
     return data;
 }
 
+const ImageItem = ({img}) => {
+    const width = Math.round(windowWidth/3);
+    const urlImage = 'https://picsum.photos/id/' + img.id + '/' + width + '/' + width;
+    return (
+        <View>
+            <Image 
+            source = {
+                {width: width,
+                height: 200,
+                uri: urlImage}
+            } />
+        </View>
+    )
+}
+
 const GalleryPage = () => {
 
+    const [photoList, setPhotoList] = React.useState([]);
+    const [limit, setLimit] = React.useState(15);
+
     React.useEffect(() => {
-        getPics().then(data => {
-            console.log(data)
+        getPics(limit).then(data => {
+            // console.log(data);
+            setPhotoList(data);
         })
-    },[]);
+    },[limit]);
 
     return (
     <View style={styles.content}>
-        <Text>Gallery Page</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
-        <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam at elit tortor. Proin gravida lectus nec sapien tristique convallis. Pellentesque auctor laoreet tincidunt. Nunc eget diam ac velit convallis rhoncus. Praesent suscipit, libero sed facilisis convallis, magna elit cursus libero, et fringilla massa odio sollicitudin mi.</Text>
+        <FlatList data={photoList}
+        renderItem={
+            ({item}) => ( <ImageItem img={item} /> )
+        }
+        keyExtractor={(elem)=>elem.id}
+        numColumns={3}
+        onEndReached={
+            () => {
+                setLimit(limit + 6);
+                console.log("End List : ", limit)
+            }
+        }
+        onEndReachedThreshold={0.5}
+        />
     </View>
 )};
 
